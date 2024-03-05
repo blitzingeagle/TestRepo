@@ -1,9 +1,10 @@
-// Copyright 2014 Citra Emulator Project
+// Copyright 2014 Lime3DS Emulator Project
 // Licensed under GPLv2 or any later version
 // Refer to the license.txt file included.
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <fmt/format.h>
 #include "common/archives.h"
 #include "common/logging/log.h"
@@ -268,8 +269,10 @@ enum class SystemInfoMemUsageRegion {
  */
 enum class SystemInfoLime3DSInformation {
     IS_LIME3DS = 0,        // Always set the output to 1, signaling the app is running on Lime3DS.
+    HOST_TICK = 1,         // Tick reference from the host in ns, unaffected by lag or cpu speed.
     BUILD_NAME = 10,       // (ie: Nightly, Canary).
     BUILD_VERSION = 11,    // Build version.
+    BUILD_PLATFORM = 12,   // Build platform, see SystemInfoLime3DSPlatform.
     BUILD_DATE_PART1 = 20, // Build date first 7 characters.
     BUILD_DATE_PART2 = 21, // Build date next 7 characters.
     BUILD_DATE_PART3 = 22, // Build date next 7 characters.
@@ -278,6 +281,17 @@ enum class SystemInfoLime3DSInformation {
     BUILD_GIT_BRANCH_PART2 = 31,      // Git branch last 7 characters.
     BUILD_GIT_DESCRIPTION_PART1 = 40, // Git description (commit) first 7 characters.
     BUILD_GIT_DESCRIPTION_PART2 = 41, // Git description (commit) last 7 characters.
+};
+
+/**
+ * Current officially supported platforms.
+ */
+enum class SystemInfoLime3DSPlatform {
+    PLATFORM_UNKNOWN = 0,
+    PLATFORM_WINDOWS = 1,
+    PLATFORM_LINUX = 2,
+    PLATFORM_APPLE = 3,
+    PLATFORM_ANDROID = 4,
 };
 
 /**
@@ -1740,12 +1754,31 @@ Result SVC::GetSystemInfo(s64* out, u32 type, s32 param) {
         case SystemInfoLime3DSInformation::IS_LIME3DS:
             *out = 1;
             break;
+        case SystemInfoLime3DSInformation::HOST_TICK:
+            *out = static_cast<s64>(std::chrono::duration_cast<std::chrono::nanoseconds>(
+                                        std::chrono::steady_clock::now().time_since_epoch())
+                                        .count());
+            break;
         case SystemInfoLime3DSInformation::BUILD_NAME:
             CopyStringPart(reinterpret_cast<char*>(out), Common::g_build_name, 0, sizeof(s64));
             break;
         case SystemInfoLime3DSInformation::BUILD_VERSION:
             CopyStringPart(reinterpret_cast<char*>(out), Common::g_build_version, 0, sizeof(s64));
             break;
+        case SystemInfoLime3DSInformation::BUILD_PLATFORM: {
+#if defined(_WIN32)
+            *out = static_cast<s64>(SystemInfoLime3DSPlatform::PLATFORM_WINDOWS);
+#elif defined(ANDROID)
+            *out = static_cast<s64>(SystemInfoLime3DSPlatform::PLATFORM_ANDROID);
+#elif defined(__linux__)
+            *out = static_cast<s64>(SystemInfoLime3DSPlatform::PLATFORM_LINUX);
+#elif defined(__APPLE__)
+            *out = static_cast<s64>(SystemInfoLime3DSPlatform::PLATFORM_APPLE);
+#else
+            *out = static_cast<s64>(SystemInfoLime3DSPlatform::PLATFORM_UNKNOWN);
+#endif
+            break;
+        }
         case SystemInfoLime3DSInformation::BUILD_DATE_PART1:
             CopyStringPart(reinterpret_cast<char*>(out), Common::g_build_date,
                            (sizeof(s64) - 1) * 0, sizeof(s64));
