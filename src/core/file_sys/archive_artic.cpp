@@ -405,12 +405,11 @@ ResultVal<std::size_t> ArticFileBackend::Read(u64 offset, std::size_t length, u8
             return res;
 
         auto read_buff = resp->GetResponseBuffer(0);
-        size_t actually_read = 0;
-        if (read_buff.has_value()) {
-            actually_read = read_buff->second;
-            memcpy(buffer + read_amount, read_buff->first, actually_read);
-        }
+        if (!read_buff.has_value())
+            return Result(-1);
+        size_t actually_read = read_buff->second;
 
+        memcpy(buffer + read_amount, read_buff->first, actually_read);
         read_amount += actually_read;
         if (actually_read != to_read)
             break;
