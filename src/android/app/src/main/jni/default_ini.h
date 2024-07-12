@@ -178,6 +178,10 @@ anaglyph_shader_name =
 # 0: Nearest, 1 (default): Linear
 filter_mode =
 
+# Delays the game render thread by the specified amount of microseconds
+# Set to 0 for no delay, only useful in dynamic-fps games to simulate GPU delay.
+delay_game_render_thread_us =
+
 [Layout]
 # Layout for the screen inside the render window, landscape mode
 # 0: Original (screens vertically aligned)
