@@ -23,13 +23,11 @@ bool EmuWindow_Android::OnSurfaceChanged(ANativeWindow* surface) {
     }
 
     render_window = surface;
-
     window_info.type = Frontend::WindowSystemType::Android;
     window_info.render_surface = surface;
 
     StopPresenting();
     OnFramebufferSizeChanged();
-
     return true;
 }
 
