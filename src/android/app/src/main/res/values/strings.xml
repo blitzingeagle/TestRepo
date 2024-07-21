@@ -778,5 +778,7 @@
     <string name="quicksave_saving">Saving…</string>
     <string name="quickload_loading">Loading…</string>
     <string name="quickload_not_found">No Quicksave available.</string>
+    <string name="instant_debug_log">Flush log output on every message</string>
+    <string name="instant_debug_log_desc">Immediately commits the debug log to file. Use this if citra crashes and the log output is being cut.</string>
 
 </resources>
