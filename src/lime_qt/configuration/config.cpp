@@ -731,6 +731,7 @@ void QtConfig::ReadSystemValues() {
         ReadBasicSetting(Settings::values.init_time_offset);
         ReadBasicSetting(Settings::values.init_ticks_type);
         ReadBasicSetting(Settings::values.init_ticks_override);
+        ReadBasicSetting(Settings::values.steps_per_hour);
         ReadBasicSetting(Settings::values.plugin_loader_enabled);
         ReadBasicSetting(Settings::values.allow_plugin_loader);
     }
@@ -1261,6 +1262,7 @@ void QtConfig::SaveSystemValues() {
         WriteBasicSetting(Settings::values.init_time_offset);
         WriteBasicSetting(Settings::values.init_ticks_type);
         WriteBasicSetting(Settings::values.init_ticks_override);
+        WriteBasicSetting(Settings::values.steps_per_hour);
         WriteBasicSetting(Settings::values.plugin_loader_enabled);
         WriteBasicSetting(Settings::values.allow_plugin_loader);
     }
