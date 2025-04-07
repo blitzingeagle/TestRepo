@@ -21,6 +21,7 @@
 #include "input_common/motion_emu.h"
 #include "lime_qt/bootmanager.h"
 #include "lime_qt/lime_qt.h"
+#include "lime_qt/util/util.h"
 #include "video_core/custom_textures/custom_tex_manager.h"
 #include "video_core/gpu.h"
 #include "video_core/renderer_base.h"
@@ -714,7 +715,7 @@ void GRenderWindow::CaptureScreenshot(u32 res_scale, const QString& screenshot_p
         screenshot_image.bits(),
         [this, screenshot_path](bool invert_y) {
             const std::string std_screenshot_path = screenshot_path.toStdString();
-            if (screenshot_image.mirrored(false, invert_y).save(screenshot_path)) {
+            if (GetMirroredImage(screenshot_image, false, invert_y).save(screenshot_path)) {
                 LOG_INFO(Frontend, "Screenshot saved to \"{}\"", std_screenshot_path);
             } else {
                 LOG_ERROR(Frontend, "Failed to save screenshot to \"{}\"", std_screenshot_path);
