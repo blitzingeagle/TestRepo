@@ -21,6 +21,16 @@ if (MSVC)
 endif()
 target_link_libraries(lime-room PRIVATE ${PLATFORM_LIBRARIES} Threads::Threads)
 
+if(APPLE)
+    target_link_libraries(lime-room PRIVATE
+        "-framework IOKit"
+        "-framework Metal"
+        "-framework QuartzCore"
+        "-framework CoreFoundation"
+        "-framework CoreGraphics"
+    )
+endif()
+
 if(UNIX AND NOT APPLE)
     install(TARGETS lime-room RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 endif()
